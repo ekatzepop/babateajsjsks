@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Puerbet Casino</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+<div class="corner-decor tl"></div>
+<div class="corner-decor tr"></div>
+<div class="corner-decor bl"></div>
+<div class="corner-decor br"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ===== LOADING ===== -->
+<div class="screen" id="screen-loading">
+  <div class="loading-text">PUERBET</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+</div>
+
+<!-- ===== MAIN MENU ===== -->
+<div class="screen hidden" id="screen-main">
+
+  <!-- иконки: аватар / колесо / звук -->
+  <div class="main-icons">
+    <div class="main-icon-btn" id="main-avatar" onclick="openProfile()" title="Профиль">🎰</div>
+    <div class="main-icon-btn" onclick="openDailyWheel()" title="Колесо">🎡</div>
+    <div class="main-icon-btn" id="mute-btn"   onclick="toggleMute()"   title="Звук">🔊</div>
+  </div>
+
+  <div class="casino-emblem">
+    <div class="emblem-ring"><div class="emblem-inner">🎰</div></div>
+  </div>
+  <div class="casino-name">Puerbet</div>
+  <div class="casino-tagline">Premium Casino Experience</div>
+  <div class="divider"></div>
+
+  <div class="menu-list">
+    <button class="menu-btn primary" onclick="showScreen('modes');sfxClick();">⚡ Выбрать режим</button>
+    <button class="menu-btn" style="background:rgba(201,168,76,0.08);border:1px solid var(--border);color:var(--gold-light);"
+            onclick="openDailyWheel();sfxClick();">🎡 Ежедневное колесо</button>
+    <button class="menu-btn" style="background:rgba(201,168,76,0.08);border:1px solid var(--border);color:var(--text);"
+            onclick="openProfile();sfxClick();">👤 Профиль</button>
+    <button class="menu-btn danger" onclick="exitApp()">✕ Выйти</button>
+  </div>
+</div>
+
+<!-- ===== MODES ===== -->
+<div class="screen hidden" id="screen-modes">
+  <div class="screen-header">
+    <button class="back-btn" onclick="showScreen('main')">←</button>
+    <div class="screen-title">Игровые режимы</div>
+    <div class="balance-badge" onclick="showToast('💰 Баланс: ' + fmtBal())">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-modes">$500.00</span>
+    </div>
+  </div>
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('slots',this)">🎰 Слоты</button>
+      <button class="tab-btn" onclick="switchTab('table',this)">🎲 Настольные</button>
+      <button class="tab-btn" onclick="switchTab('cards',this)">🃏 Карточные</button>
+      <button class="tab-btn" onclick="switchTab('fast',this)">⚡ Быстрые</button>
+    </div>
+  </div>
+  <div class="tabs-content">
+
+    <div class="tab-panel active" id="tab-slots">
+      <div class="section-label">🎰 Игровые автоматы</div>
+      <div class="games-grid">
+        <div class="game-card" data-color="purple" onclick="openSlot('lucky')">
+          <div class="game-card-top">🍒<div class="game-card-badge">Хит</div></div>
+          <div class="game-card-info"><div class="game-card-name">Lucky Sevens</div><div class="game-card-desc">Классические слоты</div></div>
+        </div>
+        <div class="game-card" data-color="gold" onclick="openSlot('pyramid')">
+          <div class="game-card-top">🏺</div>
+          <div class="game-card-info"><div class="game-card-name">Golden Pyramid</div><div class="game-card-desc">Египетская тема</div></div>
+        </div>
+        <div class="game-card" data-color="blue" onclick="openOcean()">
+          <div class="game-card-top">🐚</div>
+          <div class="game-card-info"><div class="game-card-name">Ocean Fortune</div><div class="game-card-desc">3×3 · Морская тема</div></div>
+        </div>
+        <div class="game-card" data-color="red" onclick="openDragon()">
+          <div class="game-card-top">🐉<div class="game-card-badge">Новое</div></div>
+          <div class="game-card-info"><div class="game-card-name">Dragon Heaven</div><div class="game-card-desc">6×5 · Pay Anywhere</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-table">
+      <div class="section-label">🎲 Настольные игры</div>
+      <div class="games-grid">
+        <div class="game-card" data-color="green" onclick="openRoulette()">
+          <div class="game-card-top">🎡<div class="game-card-badge">Live</div></div>
+          <div class="game-card-info"><div class="game-card-name">Рулетка</div><div class="game-card-desc">Европейская</div></div>
+        </div>
+        <div class="game-card" data-color="teal" onclick="openDice()">
+          <div class="game-card-top">🎲</div>
+          <div class="game-card-info"><div class="game-card-name">Кубик</div><div class="game-card-desc">Три вида ставок</div></div>
+        </div>
+        <div class="game-card" data-color="orange" onclick="openMahjong()">
+          <div class="game-card-top">🀄</div>
+          <div class="game-card-info"><div class="game-card-name">Маджонг</div><div class="game-card-desc">Классика</div></div>
+        </div>
+        <div class="game-card" data-color="purple" onclick="openDarts()">
+          <div class="game-card-top">🎯</div>
+          <div class="game-card-info"><div class="game-card-name">Дартс</div><div class="game-card-desc">Попади в цель!</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-cards">
+      <div class="section-label">🃏 Карточные игры</div>
+      <div class="games-grid">
+        <div class="game-card" data-color="blue" onclick="comingSoon('Блэкджек')">
+          <div class="game-card-top">🃏<div class="game-card-badge">Хит</div></div>
+          <div class="game-card-info"><div class="game-card-name">Блэкджек</div><div class="game-card-desc">21 очко</div></div>
+          <div class="coming-soon-overlay"><div class="coming-soon-label">Скоро</div></div>
+        </div>
+        <div class="game-card" data-color="red" onclick="comingSoon('Покер')">
+          <div class="game-card-top">♠️</div>
+          <div class="game-card-info"><div class="game-card-name">Покер</div><div class="game-card-desc">Texas Hold'em</div></div>
+          <div class="coming-soon-overlay"><div class="coming-soon-label">Скоро</div></div>
+        </div>
+        <div class="game-card" data-color="green" onclick="comingSoon('Баккара')">
+          <div class="game-card-top">🎴</div>
+          <div class="game-card-info"><div class="game-card-name">Баккара</div><div class="game-card-desc">Классика</div></div>
+          <div class="coming-soon-overlay"><div class="coming-soon-label">Скоро</div></div>
+        </div>
+        <div class="game-card" data-color="gold" onclick="comingSoon('Сик Бо')">
+          <div class="game-card-top">🀆</div>
+          <div class="game-card-info"><div class="game-card-name">Сик Бо</div><div class="game-card-desc">Азиатская</div></div>
+          <div class="coming-soon-overlay"><div class="coming-soon-label">Скоро</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-fast">
+      <div class="section-label">⚡ Быстрые игры</div>
+      <div class="games-grid">
+        <div class="game-card" data-color="pink" onclick="openCrash()">
+          <div class="game-card-top">🚀<div class="game-card-badge">Топ</div></div>
+          <div class="game-card-info"><div class="game-card-name">Краш</div><div class="game-card-desc">Успей вывести!</div></div>
+        </div>
+        <div class="game-card" data-color="teal" onclick="openMines()">
+          <div class="game-card-top">💣</div>
+          <div class="game-card-info"><div class="game-card-name">Мины</div><div class="game-card-desc">Без мин!</div></div>
+        </div>
+        <div class="game-card" data-color="orange" onclick="openPlinko()">
+          <div class="game-card-top">🔵</div>
+          <div class="game-card-info"><div class="game-card-name">Плинко</div><div class="game-card-desc">Удача гравитации</div></div>
+        </div>
+        <div class="game-card" data-color="purple" onclick="openPenalty()">
+          <div class="game-card-top">⚽</div>
+          <div class="game-card-info"><div class="game-card-name">Пенальти</div><div class="game-card-desc">Переиграй вратаря</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /screen-modes -->
+
+<!-- ===== SLOT SCREEN ===== -->
+<div class="screen hidden" id="screen-slot">
+  <div class="slot-header screen-header">
+    <button class="back-btn" onclick="showScreen('modes')">←</button>
+    <div class="slot-game-title" id="slot-title">Lucky Sevens</div>
+    <div class="balance-badge">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-slot">$500.00</span>
+    </div>
+  </div>
+  <div class="slot-body">
+    <div class="reels-wrap" id="reels-wrap">
+      <div class="reels-row">
+        <div class="reel" id="r0">🍒</div>
+        <div class="reel" id="r1">🍋</div>
+        <div class="reel" id="r2">🍊</div>
+      </div>
+      <div class="win-line" id="win-line"></div>
+      <div class="win-overlay" id="win-overlay">
+        <div class="win-overlay-emoji" id="wo-emoji">🏆</div>
+        <div class="win-overlay-title"  id="wo-title">ПОБЕДА!</div>
+        <div class="win-overlay-amount" id="wo-amt">+$50</div>
+      </div>
+    </div>
+    <div class="result-msg" id="result-msg">Нажмите SPIN чтобы начать!</div>
+    <div class="paytable" id="paytable"></div>
+    <div class="slot-controls">
+      <div class="bet-row">
+        <span class="bet-label">Ставка</span>
+        <button class="bet-btn" onclick="changeBet(-1)">−</button>
+        <span class="bet-value" id="bet-val">$5</span>
+        <button class="bet-btn" onclick="changeBet(1)">+</button>
+      </div>
+      <div class="bet-presets">
+        <button class="bet-preset"        onclick="setBet(1)">$1</button>
+        <button class="bet-preset active" onclick="setBet(5)">$5</button>
+        <button class="bet-preset"        onclick="setBet(10)">$10</button>
+        <button class="bet-preset"        onclick="setBet(25)">$25</button>
+        <button class="bet-preset"        onclick="setBet(50)">$50</button>
+      </div>
+      <button class="spin-btn" id="spin-btn" onclick="doSpin()">🎰 SPIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DRAGON HEAVEN ===== -->
+<div class="screen hidden" id="screen-dragon">
+  <div class="dh-header">
+    <button class="back-btn" onclick="dhBack()">←</button>
+    <div class="dh-title">🐉 龙之天堂</div>
+    <div class="balance-badge">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-dragon">$500.00</span>
+    </div>
+  </div>
+  <div class="dh-stats">
+    <div class="dh-stat"><div class="dh-stat-label">СТАВКА</div><div class="dh-stat-val" id="dh-bet-display">$5</div></div>
+    <div class="dh-stat dh-stat-center"><div class="dh-stat-label">МНОЖИТЕЛЬ</div><div class="dh-stat-val dh-mult" id="dh-mult-display">×1</div></div>
+    <div class="dh-stat"><div class="dh-stat-label">ФРИСПИНЫ</div><div class="dh-stat-val dh-free" id="dh-free-display">—</div></div>
+  </div>
+  <div class="dh-grid-wrap" id="dh-grid-wrap">
+    <div class="dh-grid" id="dh-grid"></div>
+    <div class="dh-dragon-overlay" id="dh-dragon-overlay">
+      <div class="dh-dragon-anim" id="dh-dragon-anim">🐉</div>
+      <div class="dh-dragon-msg"  id="dh-dragon-msg">МНОЖИТЕЛЬ!</div>
+    </div>
+    <div class="dh-bigwin" id="dh-bigwin">
+      <div class="dh-bigwin-emoji" id="dh-bigwin-emoji">🐉</div>
+      <div class="dh-bigwin-title" id="dh-bigwin-title">ПОБЕДА ДРАКОНА!</div>
+      <div class="dh-bigwin-amt"   id="dh-bigwin-amt">+$500</div>
+    </div>
+  </div>
+  <div class="dh-msg" id="dh-msg">Нажмите SPIN для начала игры!</div>
+  <div class="dh-controls">
+    <div class="dh-bet-row">
+      <button class="bet-btn" onclick="dhChangeBet(-1)">−</button>
+      <span class="dh-bet-val" id="dh-bet-val">$5</span>
+      <button class="bet-btn" onclick="dhChangeBet(1)">+</button>
+      <div class="dh-bet-presets">
+        <button class="bet-preset" onclick="dhSetBet(1)">$1</button>
+        <button class="bet-preset active" onclick="dhSetBet(5)">$5</button>
+        <button class="bet-preset" onclick="dhSetBet(10)">$10</button>
+        <button class="bet-preset" onclick="dhSetBet(25)">$25</button>
+      </div>
+    </div>
+    <div class="dh-btn-row">
+      <button class="dh-ante-btn" id="dh-ante-btn" onclick="dhToggleAnte()">ANTE BET +25%</button>
+      <button class="dh-spin-btn" id="dh-spin-btn" onclick="dhSpin()">🐉 SPIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DICE ===== -->
+<div class="screen hidden" id="screen-dice">
+  <div class="tg-header">
+    <button class="back-btn" onclick="showScreen('modes')">←</button>
+    <div class="tg-title">🎲 Кубик удачи</div>
+    <div class="balance-badge">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-dice">$500.00</span>
+    </div>
+  </div>
+  <div class="dice-arena">
+    <div class="dice-table">
+      <div class="dice-wrap" id="dice-wrap"><div class="dice-face" id="dice-face">⚀</div></div>
+      <div class="dice-result-msg" id="dice-result-msg">Сделайте ставку и бросайте!</div>
+    </div>
+  </div>
+  <div class="dice-bet-panel">
+    <div class="dice-bet-cat">
+      <div class="dice-cat-label">Точное число <span class="dice-cat-hint">(×5)</span></div>
+      <div class="dice-num-grid">
+        <button class="dice-num-btn" onclick="diceToggleNum(1)">⚀ 1</button>
+        <button class="dice-num-btn" onclick="diceToggleNum(2)">⚁ 2</button>
+        <button class="dice-num-btn" onclick="diceToggleNum(3)">⚂ 3</button>
+        <button class="dice-num-btn" onclick="diceToggleNum(4)">⚃ 4</button>
+        <button class="dice-num-btn" onclick="diceToggleNum(5)">⚄ 5</button>
+        <button class="dice-num-btn" onclick="diceToggleNum(6)">⚅ 6</button>
+      </div>
+    </div>
+    <div class="dice-bet-cat">
+      <div class="dice-cat-label">Чёт / Нечет <span class="dice-cat-hint">(×1.9)</span></div>
+      <div class="dice-two-grid">
+        <button class="dice-ev-btn" id="dice-even" onclick="diceToggleEO('even')">Чётное</button>
+        <button class="dice-ev-btn" id="dice-odd"  onclick="diceToggleEO('odd')">Нечётное</button>
+      </div>
+    </div>
+    <div class="dice-bet-cat">
+      <div class="dice-cat-label">Больше 3? <span class="dice-cat-hint">(×1.9 / ×1.9 / ×5)</span></div>
+      <div class="dice-three-grid">
+        <button class="dice-hl-btn" id="dice-high"  onclick="diceToggleHL('high')">Да &gt;3</button>
+        <button class="dice-hl-btn" id="dice-equal" onclick="diceToggleHL('equal')">=3</button>
+        <button class="dice-hl-btn" id="dice-low"   onclick="diceToggleHL('low')">Нет &lt;3</button>
+      </div>
+    </div>
+    <div class="dice-bottom-row">
+      <div class="dice-bet-row">
+        <button class="bet-btn" onclick="diceChangeBet(-1)">−</button>
+        <span class="dice-bet-val" id="dice-bet-val">$5</span>
+        <button class="bet-btn" onclick="diceChangeBet(1)">+</button>
+      </div>
+      <button class="dice-roll-btn" id="dice-roll-btn" onclick="diceRoll()">🎲 БРОСИТЬ</button>
+    </div>
+    <div class="dice-active-bets" id="dice-active-bets">Выберите хотя бы 1 ставку</div>
+  </div>
+</div>
+
+<!-- ===== DARTS ===== -->
+<div class="screen hidden" id="screen-darts">
+  <div class="tg-header">
+    <button class="back-btn" onclick="showScreen('modes')">←</button>
+    <div class="tg-title">🎯 Дартс</div>
+    <div class="balance-badge">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-darts">$500.00</span>
+    </div>
+  </div>
+  <div class="darts-arena">
+    <div class="darts-board-wrap">
+      <canvas id="darts-canvas" width="240" height="240"></canvas>
+      <div class="darts-dart" id="darts-dart" style="display:none;">🎯</div>
+    </div>
+    <div class="darts-result-msg" id="darts-result-msg">Сделайте ставку и бросайте!</div>
+  </div>
+  <div class="darts-bet-panel">
+    <div class="darts-bet-cat">
+      <div class="dice-cat-label">Секция (1–20) <span class="dice-cat-hint">(×18)</span></div>
+      <div class="darts-num-scroll"><div class="darts-num-grid" id="darts-num-grid"></div></div>
+    </div>
+    <div class="darts-bet-cat">
+      <div class="dice-cat-label">Цвет сектора <span class="dice-cat-hint">(×1.9)</span></div>
+      <div class="dice-two-grid">
+        <button class="darts-col-btn" id="darts-black" onclick="dartsToggleColor('black')" style="background:rgba(30,30,30,.8);border-color:rgba(255,255,255,.2);color:#ccc;">⬛ Чёрный</button>
+        <button class="darts-col-btn" id="darts-red"   onclick="dartsToggleColor('red')"   style="background:rgba(150,20,20,.4);border-color:rgba(220,50,50,.3);color:#ff8080;">🔴 Красный</button>
+      </div>
+    </div>
+    <div class="darts-bet-cat">
+      <div class="dice-cat-label">Яблочко (Bull) <span class="dice-cat-hint">(×35)</span></div>
+      <div class="dice-two-grid">
+        <button class="darts-bull-btn" id="darts-bull"   onclick="dartsToggleBull()">🎯 Попасть в Bull</button>
+        <button class="darts-bull-btn" id="darts-nobull" onclick="dartsToggleNoBull()">❌ Не Bull</button>
+      </div>
+    </div>
+    <div class="dice-bottom-row">
+      <div class="dice-bet-row">
+        <button class="bet-btn" onclick="dartsChangeBet(-1)">−</button>
+        <span class="dice-bet-val" id="darts-bet-val">$5</span>
+        <button class="bet-btn" onclick="dartsChangeBet(1)">+</button>
+      </div>
+      <button class="darts-throw-btn" id="darts-throw-btn" onclick="dartsThrow()">🎯 БРОСИТЬ</button>
+    </div>
+    <div class="dice-active-bets" id="darts-active-bets">Выберите хотя бы 1 ставку</div>
+  </div>
+</div>
+
+<div class="dh-freespin-banner" id="dh-freespin-banner">🐉 ФРИСПИНЫ АКТИВИРОВАНЫ!</div>
+
+<!-- ===== OCEAN FORTUNE ===== -->
+<div class="screen hidden" id="screen-ocean">
+  <div class="tg-header" style="background:rgba(2,18,40,.98);border-bottom:1px solid rgba(0,150,255,.2);">
+    <button class="back-btn" style="border-color:rgba(0,150,255,.3);color:#4FC3F7;" onclick="showScreen('modes')">←</button>
+    <div class="tg-title" style="background:linear-gradient(135deg,#00B4DB,#0083B0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">🌊 Ocean Fortune</div>
+    <div class="balance-badge" style="border-color:rgba(0,150,255,.5);">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-ocean">$500.00</span>
+    </div>
+  </div>
+  <div class="oc-body">
+    <div class="oc-waves"><div class="oc-wave oc-wave1"></div><div class="oc-wave oc-wave2"></div></div>
+    <div class="oc-grid-wrap">
+      <div class="oc-grid" id="oc-grid">
+        <div class="oc-cell" id="oc0">🐚</div><div class="oc-cell" id="oc1">🐠</div><div class="oc-cell" id="oc2">🦀</div>
+        <div class="oc-cell" id="oc3">🐙</div><div class="oc-cell" id="oc4">⭐</div><div class="oc-cell" id="oc5">🐚</div>
+        <div class="oc-cell" id="oc6">🐠</div><div class="oc-cell" id="oc7">🦑</div><div class="oc-cell" id="oc8">🐙</div>
+      </div>
+      <canvas class="oc-lines-canvas" id="oc-lines" width="280" height="280"></canvas>
+      <div class="oc-bigwin" id="oc-bigwin">
+        <div class="oc-bw-emoji" id="oc-bw-emoji">🌊</div>
+        <div class="oc-bw-title" id="oc-bw-title">ВОЛНА УДАЧИ!</div>
+        <div class="oc-bw-amt"   id="oc-bw-amt">+$100</div>
+      </div>
+    </div>
+    <div class="oc-result" id="oc-result">Нажмите SPIN чтобы начать!</div>
+    <div class="oc-paytable">
+      <div class="oc-pt-title">◆ ВЫПЛАТЫ ◆</div>
+      <div class="oc-pt-grid">
+        <div class="oc-pt-row"><span>🦈🦈🦈</span><span>ДЖЕКПОТ</span><span class="oc-pt-m">×50</span></div>
+        <div class="oc-pt-row"><span>💎💎💎</span><span>Жемчуг</span><span class="oc-pt-m">×25</span></div>
+        <div class="oc-pt-row"><span>🐙🐙🐙</span><span>Осьминог</span><span class="oc-pt-m">×12</span></div>
+        <div class="oc-pt-row"><span>🦑🦑🦑</span><span>Кальмар</span><span class="oc-pt-m">×8</span></div>
+        <div class="oc-pt-row"><span>🦀🦀🦀</span><span>Краб</span><span class="oc-pt-m">×5</span></div>
+        <div class="oc-pt-row"><span>🐠🐠🐠</span><span>Рыбка</span><span class="oc-pt-m">×3</span></div>
+        <div class="oc-pt-row"><span>🐚🐚🐚</span><span>Ракушка</span><span class="oc-pt-m">×2</span></div>
+        <div class="oc-pt-row"><span>⭐⭐⭐</span><span>Морская звезда</span><span class="oc-pt-m">×2</span></div>
+        <div class="oc-pt-row"><span>🐠🐠 ❓</span><span>Рыбки ×2</span><span class="oc-pt-m">×1.5</span></div>
+      </div>
+    </div>
+    <div class="oc-controls">
+      <div class="dice-bet-row">
+        <button class="bet-btn" style="border-color:rgba(0,150,255,.4);color:#4FC3F7;" onclick="ocChangeBet(-1)">−</button>
+        <span class="dice-bet-val" style="color:#4FC3F7;" id="oc-bet-val">$5</span>
+        <button class="bet-btn" style="border-color:rgba(0,150,255,.4);color:#4FC3F7;" onclick="ocChangeBet(1)">+</button>
+        <div class="oc-bet-presets">
+          <button class="bet-preset" onclick="ocSetBet(1)">$1</button>
+          <button class="bet-preset active" onclick="ocSetBet(5)">$5</button>
+          <button class="bet-preset" onclick="ocSetBet(10)">$10</button>
+          <button class="bet-preset" onclick="ocSetBet(25)">$25</button>
+        </div>
+      </div>
+      <button class="oc-spin-btn" id="oc-spin-btn" onclick="ocSpin()">🌊 SPIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ROULETTE ===== -->
+<div class="screen hidden" id="screen-roulette">
+  <div class="tg-header" style="background:rgba(5,20,5,.98);border-bottom:1px solid rgba(0,180,0,.2);">
+    <button class="back-btn" style="border-color:rgba(0,180,0,.3);color:#4CAF50;" onclick="showScreen('modes')">←</button>
+    <div class="tg-title" style="background:linear-gradient(135deg,#43A047,#A5D6A7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">🎡 Европейская Рулетка</div>
+    <div class="balance-badge" style="border-color:rgba(0,180,0,.4);">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-roulette">$500.00</span>
+    </div>
+  </div>
+  <div class="rl-wheel-area">
+    <canvas id="rl-canvas" width="200" height="200"></canvas>
+    <div class="rl-ball" id="rl-ball"></div>
+    <div class="rl-result-num" id="rl-result-num"></div>
+  </div>
+  <div class="rl-bet-scroll">
+    <div class="rl-section-title">Прямая ставка (×35)</div>
+    <div class="rl-num-grid" id="rl-num-grid"></div>
+    <div class="rl-section-title" style="margin-top:10px;">Внешние ставки</div>
+    <div class="rl-outside">
+      <button class="rl-out-btn" id="rlo-red"   onclick="rlToggleOut('red')">🔴 Красные ×1</button>
+      <button class="rl-out-btn" id="rlo-black" onclick="rlToggleOut('black')">⬛ Чёрные ×1</button>
+      <button class="rl-out-btn" id="rlo-even"  onclick="rlToggleOut('even')">2-4-6 Чёт ×1</button>
+      <button class="rl-out-btn" id="rlo-odd"   onclick="rlToggleOut('odd')">1-3-5 Нечет ×1</button>
+      <button class="rl-out-btn" id="rlo-low"   onclick="rlToggleOut('low')">1–18 Мало ×1</button>
+      <button class="rl-out-btn" id="rlo-high"  onclick="rlToggleOut('high')">19–36 Большое ×1</button>
+      <button class="rl-out-btn" id="rlo-d1"    onclick="rlToggleOut('d1')">1-я дюжина ×2</button>
+      <button class="rl-out-btn" id="rlo-d2"    onclick="rlToggleOut('d2')">2-я дюжина ×2</button>
+      <button class="rl-out-btn" id="rlo-d3"    onclick="rlToggleOut('d3')">3-я дюжина ×2</button>
+      <button class="rl-out-btn" id="rlo-c1"    onclick="rlToggleOut('c1')">Колонка 1 ×2</button>
+      <button class="rl-out-btn" id="rlo-c2"    onclick="rlToggleOut('c2')">Колонка 2 ×2</button>
+      <button class="rl-out-btn" id="rlo-c3"    onclick="rlToggleOut('c3')">Колонка 3 ×2</button>
+    </div>
+    <div class="rl-bet-info" id="rl-bet-info">Ставок нет. Выберите хотя бы одну.</div>
+  </div>
+  <div class="rl-controls">
+    <div class="dice-bet-row">
+      <button class="bet-btn" style="border-color:rgba(0,180,0,.3);color:#4CAF50;" onclick="rlChangeBet(-1)">−</button>
+      <span class="dice-bet-val" style="color:#4CAF50;" id="rl-bet-val">$5</span>
+      <button class="bet-btn" style="border-color:rgba(0,180,0,.3);color:#4CAF50;" onclick="rlChangeBet(1)">+</button>
+      <div class="oc-bet-presets">
+        <button class="bet-preset" onclick="rlSetBet(1)">$1</button>
+        <button class="bet-preset active" onclick="rlSetBet(5)">$5</button>
+        <button class="bet-preset" onclick="rlSetBet(10)">$10</button>
+        <button class="bet-preset" onclick="rlSetBet(25)">$25</button>
+      </div>
+    </div>
+    <div class="rl-btn-row">
+      <button class="rl-clear-btn" onclick="rlClearBets()">✕ Очистить</button>
+      <button class="rl-spin-btn" id="rl-spin-btn" onclick="rlSpin()">🎡 КРУТИТЬ</button>
+    </div>
+    <div class="rl-result-msg" id="rl-result-msg">Выберите ставки и крутите колесо!</div>
+  </div>
+</div>
+
+<!-- ===== MAHJONG ===== -->
+<div class="screen hidden" id="screen-mahjong">
+  <div class="tg-header" style="background:rgba(15,10,5,.98);border-bottom:1px solid rgba(220,100,0,.25);">
+    <button class="back-btn" style="border-color:rgba(220,100,0,.3);color:#E67E22;" onclick="showScreen('modes')">←</button>
+    <div class="tg-title" style="background:linear-gradient(135deg,#E67E22,#F39C12,#E74C3C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">🀄 Маджонг</div>
+    <div class="balance-badge" style="border-color:rgba(220,100,0,.4);">
+      <span class="balance-icon">💰</span>
+      <span class="balance-amount" id="bal-mahjong">$500.00</span>
+    </div>
+  </div>
+  <div class="mj-body">
+    <div class="mj-infobar">
+      <div class="mj-info-item"><div class="mj-info-lbl">Рука</div><div class="mj-info-val" id="mj-hand-name">—</div></div>
+      <div class="mj-info-item"><div class="mj-info-lbl">Раунд</div><div class="mj-info-val" id="mj-round">1</div></div>
+      <div class="mj-info-item"><div class="mj-info-lbl">Ставка</div><div class="mj-info-val" style="color:#E67E22;" id="mj-bet-show">$5</div></div>
+    </div>
+    <div class="mj-section-lbl">ВАШИ ТАЙЛЫ (14)</div>
+    <div class="mj-hand" id="mj-hand"></div>
+    <div class="mj-section-lbl">СБРОС</div>
+    <div class="mj-discard" id="mj-discard"></div>
+    <div class="mj-actions" id="mj-actions">
+      <button class="mj-draw-btn"    id="mj-draw-btn"    onclick="mjDraw()">🂠 Взять из колоды</button>
+      <button class="mj-discard-btn" id="mj-discard-btn" onclick="mjDiscardSelected()" disabled>🗑 Сбросить выбранный</button>
+      <button class="mj-declare-btn" id="mj-declare-btn" onclick="mjDeclare()" disabled>🏆 Объявить Маджонг!</button>
+    </div>
+    <div class="mj-msg" id="mj-msg">Нажмите НОВАЯ ИГРА чтобы начать!</div>
+    <div class="mj-controls">
+      <div class="dice-bet-row">
+        <button class="bet-btn" style="border-color:rgba(220,100,0,.3);color:#E67E22;" onclick="mjChangeBet(-1)">−</button>
+        <span class="dice-bet-val" style="color:#E67E22;" id="mj-bet-val">$5</span>
+        <button class="bet-btn" style="border-color:rgba(220,100,0,.3);color:#E67E22;" onclick="mjChangeBet(1)">+</button>
+        <div class="oc-bet-presets">
+          <button class="bet-preset" onclick="mjSetBet(1)">$1</button>
+          <button class="bet-preset active" onclick="mjSetBet(5)">$5</button>
+          <button class="bet-preset" onclick="mjSetBet(10)">$10</button>
+          <button class="bet-preset" onclick="mjSetBet(25)">$25</button>
+        </div>
+      </div>
+      <button class="mj-new-btn" id="mj-new-btn" onclick="mjNewGame()">🀄 НОВАЯ ИГРА</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CRASH ===== -->
+<div class="screen hidden" id="screen-crash">
+  <div class="game-topbar">
+    <button class="back-btn" onclick="showScreen('main')">← Назад</button>
+    <span class="topbar-title">🚀 Краш</span>
+    <span class="balance-amount" id="bal-crash">$0</span>
+  </div>
+  <div class="crash-mult-bar">
+    <div class="crash-multiplier-display" id="crash-mult-display">1.00×</div>
+    <div class="crash-status-msg" id="crash-status-msg">Сделайте ставку и нажмите «Ставить»</div>
+  </div>
+  <div class="crash-arena">
+    <canvas id="crash-canvas" width="340" height="240"></canvas>
+  </div>
+  <div class="crash-bet-panel">
+    <div class="crash-bet-row">
+      <button class="bet-btn" onclick="crashChangeBet(-1)">−</button>
+      <span class="crash-bet-val" id="crash-bet-val">$5</span>
+      <button class="bet-btn" onclick="crashChangeBet(1)">+</button>
+    </div>
+    <button class="crash-action-btn" id="crash-action-btn" onclick="crashAction()">🚀 СТАВИТЬ</button>
+  </div>
+</div>
+
+<!-- ===== MINES ===== -->
+<div class="screen hidden" id="screen-mines">
+  <div class="game-topbar">
+    <button class="back-btn" onclick="minesExit()">← Назад</button>
+    <span class="topbar-title">💣 Мины</span>
+    <span class="balance-amount" id="bal-mines">$0</span>
+  </div>
+  <div class="mines-arena">
+    <div class="mines-info-row">
+      <span class="mines-info-label">Мин: <b id="mines-count-display">5</b></span>
+      <span class="mines-info-label">Множитель: <b id="mines-mult-display">1.00×</b></span>
+    </div>
+    <div class="mines-grid" id="mines-grid"></div>
+  </div>
+  <div class="mines-bet-panel">
+    <div class="mines-controls-row">
+      <div class="mines-control-group">
+        <div class="mines-label">Ставка</div>
+        <div class="crash-bet-row">
+          <button class="bet-btn" onclick="minesChangeBet(-1)">−</button>
+          <span class="crash-bet-val" id="mines-bet-val">$5</span>
+          <button class="bet-btn" onclick="minesChangeBet(1)">+</button>
+        </div>
+      </div>
+      <div class="mines-control-group">
+        <div class="mines-label">Мин (1–24)</div>
+        <div class="crash-bet-row">
+          <button class="bet-btn" onclick="minesChangeMines(-1)">−</button>
+          <span class="crash-bet-val" id="mines-mine-count">5</span>
+          <button class="bet-btn" onclick="minesChangeMines(1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="mines-btn-row">
+      <button class="crash-action-btn"  id="mines-start-btn"   onclick="minesStart()">💣 НАЧАТЬ</button>
+      <button class="mines-cashout-btn hidden" id="mines-cashout-btn" onclick="minesCashout()">💰 ЗАБРАТЬ</button>
+    </div>
+    <div class="mines-win-display hidden" id="mines-win-display">Выигрыш: $0</div>
+  </div>
+</div>
+
+<!-- ===== PLINKO ===== -->
+<div class="screen hidden" id="screen-plinko">
+  <div class="game-topbar">
+    <button class="back-btn" onclick="showScreen('main')">← Назад</button>
+    <span class="topbar-title">🔵 Плинко</span>
+    <span class="balance-amount" id="bal-plinko">$0</span>
+  </div>
+  <div class="plinko-arena">
+    <canvas id="plinko-canvas" width="340" height="300"></canvas>
+  </div>
+  <div class="plinko-multipliers" id="plinko-multipliers"></div>
+  <div class="crash-bet-panel">
+    <div class="plinko-controls-row">
+      <div class="mines-control-group">
+        <div class="mines-label">Ставка за шарик</div>
+        <div class="crash-bet-row">
+          <button class="bet-btn" onclick="plinkoChangeBet(-1)">−</button>
+          <span class="crash-bet-val" id="plinko-bet-val">$5</span>
+          <button class="bet-btn" onclick="plinkoChangeBet(1)">+</button>
+        </div>
+      </div>
+      <div class="mines-control-group">
+        <div class="mines-label">Шариков</div>
+        <div class="crash-bet-row">
+          <button class="bet-btn" onclick="plinkoChangeBalls(-1)">−</button>
+          <span class="crash-bet-val" id="plinko-balls-val">1</span>
+          <button class="bet-btn" onclick="plinkoChangeBalls(1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="plinko-total-label">Итого: <span id="plinko-total-bet">$5</span></div>
+    <button class="crash-action-btn" id="plinko-launch-btn" onclick="plinkoLaunch()">🔵 ЗАПУСТИТЬ</button>
+  </div>
+</div>
+
+<!-- ===== PENALTY ===== -->
+<div class="screen hidden" id="screen-penalty">
+  <div class="game-topbar">
+    <button class="back-btn" onclick="penaltyExit()">← Назад</button>
+    <span class="topbar-title">⚽ Пенальти</span>
+    <span class="balance-amount" id="bal-penalty">$0</span>
+  </div>
+  <div class="penalty-arena">
+    <div class="penalty-field">
+      <div class="penalty-goal-wrapper">
+        <div class="penalty-net-lines"></div>
+        <div class="penalty-goalkeeper" id="penalty-keeper">🧤</div>
+        <div class="penalty-ball-anim"  id="penalty-ball-anim"></div>
+      </div>
+      <div class="penalty-aim-row" id="penalty-aim-row">
+        <button class="penalty-aim-btn" onclick="penaltyShoot(0)">↖</button>
+        <button class="penalty-aim-btn" onclick="penaltyShoot(1)">↑</button>
+        <button class="penalty-aim-btn" onclick="penaltyShoot(2)">↑</button>
+        <button class="penalty-aim-btn" onclick="penaltyShoot(3)">↑</button>
+        <button class="penalty-aim-btn" onclick="penaltyShoot(4)">↗</button>
+      </div>
+    </div>
+    <div class="penalty-score-row">
+      <div class="penalty-score-item"><div class="penalty-score-label">Серия</div><div class="penalty-score-val" id="penalty-streak">0</div></div>
+      <div class="penalty-score-item"><div class="penalty-score-label">Множитель</div><div class="penalty-score-val" id="penalty-mult">1.00×</div></div>
+      <div class="penalty-score-item"><div class="penalty-score-label">Выигрыш</div><div class="penalty-score-val" id="penalty-win">$0</div></div>
+    </div>
+    <div class="penalty-msg" id="penalty-msg">Выберите направление удара!</div>
+  </div>
+  <div class="crash-bet-panel">
+    <div class="crash-bet-row">
+      <button class="bet-btn" onclick="penaltyChangeBet(-1)">−</button>
+      <span class="crash-bet-val" id="penalty-bet-val">$5</span>
+      <button class="bet-btn" onclick="penaltyChangeBet(1)">+</button>
+    </div>
+    <div class="mines-btn-row">
+      <button class="crash-action-btn" id="penalty-start-btn"   onclick="penaltyStart()">⚽ НАЧАТЬ СЕРИЮ</button>
+      <button class="mines-cashout-btn hidden" id="penalty-cashout-btn" onclick="penaltyCashout()">💰 ЗАБРАТЬ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ПРОФИЛЬ ИГРОКА
+════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-profile">
+  <div class="game-topbar">
+    <button class="back-btn" onclick="showScreen('main');sfxClick();">← Назад</button>
+    <span class="topbar-title">👤 Профиль</span>
+    <span class="balance-amount" id="bal-profile">$0</span>
+  </div>
+
+  <div class="profile-scroll">
+
+    <!-- Аватар и имя -->
+    <div class="profile-avatar-zone">
+      <div class="profile-avatar" id="p-avatar" onclick="openAvatarPicker()">🎰</div>
+      <div class="profile-avatar-hint">Нажми чтобы сменить</div>
+      <div class="profile-name-wrap">
+        <input class="profile-name-input" id="p-name" type="text" maxlength="20"
+               value="Игрок" onblur="profileSaveName()" onkeydown="if(event.key==='Enter')this.blur()">
+        <div class="profile-name-hint">Нажми на имя чтобы изменить</div>
+      </div>
+      <div class="vip-badge vip-bronze" id="p-badge">🥉 Bronze</div>
+      <!-- XP bar -->
+      <div class="xp-bar-wrap">
+        <div class="xp-labels"><span id="p-xp-from">Bronze</span><span id="p-xp-to">$500</span></div>
+        <div class="xp-bar"><div class="xp-fill" id="p-xp-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="profile-stats">
+      <div class="stat-card"><div class="stat-val" id="p-stat-games">0</div><div class="stat-lbl">Игр сыграно</div></div>
+      <div class="stat-card"><div class="stat-val" id="p-stat-best">$0</div><div class="stat-lbl">Лучший выигрыш</div></div>
+      <div class="stat-card"><div class="stat-val" id="p-stat-wagered">$0</div><div class="stat-lbl">Поставлено</div></div>
+      <div class="stat-card"><div class="stat-val" id="p-stat-won">$0</div><div class="stat-lbl">Выиграно</div></div>
+    </div>
+
+    <!-- Валюта -->
+    <div class="section-heading">Валюта отображения</div>
+    <div class="currency-grid">
+      <div class="cur-btn active" data-cur="USD" onclick="selectCurrency('USD')"><div class="cur-symbol">$</div><div class="cur-name">Доллар</div></div>
+      <div class="cur-btn"        data-cur="EUR" onclick="selectCurrency('EUR')"><div class="cur-symbol">€</div><div class="cur-name">Евро</div></div>
+      <div class="cur-btn"        data-cur="RUB" onclick="selectCurrency('RUB')"><div class="cur-symbol">₽</div><div class="cur-name">Рубль</div></div>
+      <div class="cur-btn"        data-cur="GBP" onclick="selectCurrency('GBP')"><div class="cur-symbol">£</div><div class="cur-name">Фунт</div></div>
+      <div class="cur-btn"        data-cur="JPY" onclick="selectCurrency('JPY')"><div class="cur-symbol">¥</div><div class="cur-name">Иена</div></div>
+      <div class="cur-btn"        data-cur="BTC" onclick="selectCurrency('BTC')"><div class="cur-symbol">₿</div><div class="cur-name">Биткоин</div></div>
+    </div>
+
+    <div style="height:24px;"></div>
+  </div><!-- /profile-scroll -->
+
+  <!-- Оверлей выбора аватара -->
+  <div class="av-overlay hidden" id="av-overlay" onclick="this.classList.add('hidden')">
+    <div class="av-box" onclick="event.stopPropagation()">
+      <div class="av-title">Выбери аватар</div>
+      <div class="av-grid" id="av-grid"></div>
+      <button class="av-close" onclick="document.getElementById('av-overlay').classList.add('hidden')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ЕЖЕДНЕВНОЕ КОЛЕСО ФОРТУНЫ
+════════════════════════════════════════════ -->
+<div class="screen hidden" id="screen-wheel">
+  <div class="game-topbar">
+    <button class="back-btn" onclick="showScreen('main');sfxClick();">← Назад</button>
+    <span class="topbar-title">🎡 Колесо Фортуны</span>
+    <span class="balance-amount" id="bal-wheel">$0</span>
+  </div>
+
+  <div class="wheel-body">
+    <div class="wheel-wrap">
+      <div class="wheel-pointer">▼</div>
+      <canvas id="wheel-canvas" width="290" height="290"></canvas>
+    </div>
+    <button class="wheel-spin-btn" id="wheel-spin-btn" onclick="spinWheel()">🎡 КРУТИТЬ!</button>
+    <div class="wheel-countdown" id="wheel-countdown">Загрузка...</div>
+    <div class="wheel-result"    id="wheel-result"></div>
+    <div class="wheel-history-label">Последние призы</div>
+    <div class="wheel-chips"     id="wheel-chips"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
